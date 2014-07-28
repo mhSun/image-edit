@@ -1,6 +1,6 @@
 <!DOCTYPE html > <html> 
 <head> 
-    <title> 图片增强处理 </title>
+    <title> 图像编辑器 </title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
     <script type="text/javascript" src="color.js"></script>
     <script type="text/javascript" src="image.js"></script>
@@ -11,120 +11,111 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <div id="bl" class="fl">
-        <div id="select">
-            选择图片：<input type="file" name="image" class="button" onchange="imgload(this)" accept="image/*"/>
+    <div id="main" class="clear">
+        <div id="bl">
+            <div id="image">
+                <p id="temp" style = "display:none;"></p>
+                <canvas id="canvas"></canvas>
+            </div>
         </div>
-        <div id="image">
-            <p id="temp" style = "display:none;"></p>
-            <canvas id="canvas"></canvas>
+        <div id="br">
+            <div id="select">
+                <input type="file" name="image" class="button" onchange="imgload(this)" accept="image/*"/>
+            </div>
+            <div id="tools">
+                <div class="t-item">
+                    大小：
+                    <input type="range" id="size_bar" min="1" max="200" value="100">
+                    <input type="text" id="size_value" class="input_text" maxlength="2" value="100">
+                </div>
+                <div class="t-item">
+                    亮度：
+                    <input type="range" id="brightness_bar" min="-128" max="128" value="0">
+                    <input type="text" id="brightness_value" class="input_text" maxlength="3" value="0">
+                </div>
+                <div class="t-item">
+                    对比度：
+                    <input type="range" id="contrast_bar" min="-128" max="128" value="0">
+                    <input type="text" id="contrast_value" class="input_text" maxlength="3" value="0">
+                </div>
+                <div class="t-item" style="margin-top:10px;">
+                    <button id="grayscale">灰度图</button><button id="revert">图像反转</button>
+                </div>
+                <div class="t-item">
+                    <button id="stretch">灰度拉伸</button>
+                    拉伸范围:
+                    <input type="text" id="start_value" class="input_text" value="0">
+                    到
+                    <input type="text" id="end_value" class="input_text" value="255">
+                </div>
+                <div class="t-item">
+                    <button id="logarithmic">对数变换</button>
+                    底数:
+                    <input type="text" id="logarithmic_value" class="input_text" value="100">
+                </div>
+                <div class="t-item">
+                    <button id="gamma">伽玛变换</button>
+                    伽玛值:
+                    <input type="text" id="gamma_value" class="input_text" value="4">
+                </div>
+                <div class="t-item">
+                    <button id="histogram">直方图均衡</button><button id="ahe">自适应直方图均衡</button>
+                </div>
+                <div class="t-item">
+                    <button id="restoration">伪彩色处理</button>
+                     <select id="restoration_method">
+                        <option value="perception">感知色彩变换</option>
+                        <option value="Rainbow">彩虹编码</option>
+                        <option value="hotmetal">热金属编码</option>
+                    </select>
+                </div>
+                <div class="t-item">
+                    <button id="reduction">图像减色</button>
+                    <select id="reduction_method">
+                        <option value="uniform">直接量化</option>
+                        <option value="population">统计量化</option>
+                    </select>
+                    Colors
+                    <input type="text" id="reduction_colors" class="input_text" value="4">
+                </div>
+                <div class="t-item">
+                    <button id="spatialfilter">空间滤镜</button>
+                    <select id="spatialfilter_select">
+                        <option value="gaussian">高斯滤波</option>
+                        <option value="sharpen">锐化</option>
+                    </select>
+                    <br/>
+                    Size
+                    <input type="text" id="filter_sizze" class="input_text" value="3">
+                    Sigma
+                    <input type="text" id="filter_sigma" class="input_text" value="1">
+                </div>
+                <div class="t-item">
+                    <button id="laplacian">拉普拉斯算子</button>
+                </div>
+                <div class="t-item" style="margin-top:10px;">
+                    <button id="cancel">还原</button>
+                    <button id="reset">重置</button>
+                    <button id="save">保存</button>
+                    <button id="export">导出图像</button>
+                </div>
+            </div>
         </div>
     </div>
-    <div id="br">
-        <div id="tools">
-            <div class="t-item">
-                大小：
-                <input type="range" id="size_bar" min="1" max="200" value="100">
-                <input type="text" id="size_value" class="input_text" maxlength="2" value="100">
-            </div>
-            <div class="t-item">
-                亮度：
-                <input type="range" id="brightness_bar" min="-128" max="128" value="0">
-                <input type="text" id="brightness_value" class="input_text" maxlength="3" value="0">
-            </div>
-            <div class="t-item">
-                对比度：
-                <input type="range" id="contrast_bar" min="-128" max="128" value="0">
-                <input type="text" id="contrast_value" class="input_text" maxlength="3" value="0">
-            </div>
-            <div class="t-item" style="margin-top:10px;">
-                <button id="grayscale">灰度图</button><button id="revert">图像反转</button>
-            </div>
-            <div class="t-item">
-                <button id="stretch">灰度拉伸</button>
-                拉伸范围:
-                <input type="text" id="start_value" class="input_text" value="0">
-                到
-                <input type="text" id="end_value" class="input_text" value="255">
-            </div>
-            <div class="t-item">
-                <button id="logarithmic">对数变换</button>
-                底数:
-                <input type="text" id="logarithmic_value" class="input_text" value="100">
-            </div>
-            <div class="t-item">
-                <button id="gamma">伽玛变换</button>
-                伽玛值:
-                <input type="text" id="gamma_value" class="input_text" value="4">
-            </div>
-            <div class="t-item">
-                <button id="histogram">直方图均衡</button><button id="ahe">自适应直方图均衡</button>
-            </div>
-            <div class="t-item">
-                <button id="restoration">伪彩色处理</button>
-                 <select id="restoration_method">
-                    <option value="perception">感知色彩变换</option>
-                    <option value="Rainbow">彩虹编码</option>
-                    <option value="hotmetal">热金属编码</option>
-                </select>
-            </div>
-            <div class="t-item">
-                <button id="reduction">图像减色</button>
-                <select id="reduction_method">
-                    <option value="uniform">直接量化</option>
-                    <option value="population">统计量化</option>
-                </select>
-                Colors
-                <input type="text" id="reduction_colors" class="input_text" value="4">
-            </div>
-            <div class="t-item">
-                <button id="spatialfilter">空间滤镜</button>
-                <select id="spatialfilter_select">
-                    <option value="gaussian">高斯滤波</option>
-                    <option value="sharpen">锐化</option>
-                    <!-- <option value="vsobel">Sobel (Vertical)</option>
-                    <option value="hsobel">Sobel (Horizontal)</option>
-                    <option value="laplacian">拉普拉斯算子</option> -->
-                </select>
-                Size
-                <input type="text" id="filter_sizze" class="input_text" value="3">
-                Sigma
-                <input type="text" id="filter_sigma" class="input_text" value="1">
-            </div>
-            <div class="t-item">
-                <button id="laplacian">拉普拉斯算子</button>
-                <button id="hsobel">水平Sobel</button>
-                <button id="vsobel">垂直Sobel</button>
-            </div>
-            <div class="t-item" style="margin-top:10px;">
-                <button id="cancel">还原</button>
-                <button id="reset">重置</button>
-                <button id="save">保存</button>
-                <button id="export">导出图像</button>
-            </div>
-        </div>
-        <div id="chart">
-            <div id="present" class="chart_item">
-                <canvas id="JSChart_present" width="0" height="0" style="position: relative;"></canvas>
-            </div>
-            <div id="primary" class="chart_item">
-                <canvas id="JSChart_primary" width="0" height="0" style="position: relative;"></canvas>
-            </div>
-        </div>
+     <div id="chart">
+            <canvas id="JSChart" width="0" height="0" style="position: relative;"></canvas>
     </div>
     <script>
         var image = null;
         var canvas = document.getElementById("canvas");
         window.onload = function() {
             /* begin dom style*/
-            document.getElementById("br").style.height = window.innerHeight + "px";
-            document.getElementById("bl").style.width = window.innerWidth - 411 + "px";
-            document.getElementById("image").style.height = window.innerHeight - 40 + "px";
+            document.getElementById("main").style.height = window.innerHeight - 210 + "px";
+            document.getElementById("bl").style.width = window.innerWidth - 301 + "px";
             /* end dom style */
 
             /* 初始化Charts */
-            drawCharts('present', document.getElementById("chart").offsetWidth, 200, [[[0,0],[255,1]]]);
-            drawCharts('primary', document.getElementById("chart").offsetWidth, 220, [[[0,0],[255,1]]]);
+            drawCharts(document.getElementById("chart").offsetWidth, 205, [[[0,0],[255,1]]]);
 
             /* begin dom event */
             document.getElementById("size_bar").addEventListener("change", function() {
@@ -275,30 +266,6 @@
                     ));
                 render(I,'present');
             },false);
-            document.getElementById("hsobel").addEventListener("click",function(){
-                if (image ===null) {
-                    return;
-                }
-                var loader = RGBAImage.fromImage(canvas);
-                var I = filters.spatialfilter(loader, FilterFactory.createfilter(
-                            {
-                                name: "hsobel"
-                            }
-                    ));
-                render(I,'present');
-            },false);
-            document.getElementById("vsobel").addEventListener("click",function(){
-                if (image ===null) {
-                    return;
-                }
-                var loader = RGBAImage.fromImage(canvas);
-                var I = filters.spatialfilter(loader, FilterFactory.createfilter(
-                            {
-                                name: "vsobel"
-                            }
-                    ));
-                render(I,'present');
-            },false);
             document.getElementById("reset").addEventListener("click",function(){
                 var img = new Image();
                 img.onload = function(){
@@ -364,45 +331,35 @@
                     hist[i][j] = [j,hist[i][j]];
                 }
             }
-            if(!id){
-                drawCharts('present',document.getElementById("chart").offsetWidth,200,hist);
-                drawCharts('primary',document.getElementById("chart").offsetWidth,200,hist);
-            }
-            else{
-                drawCharts(id,document.getElementById("chart").offsetWidth,200,hist);   
-            }
+            drawCharts(document.getElementById("chart").offsetWidth,200,hist);
         }
 
-        function drawCharts(id,w,h,hist){
+        function drawCharts(w,h,hist){
+            console.log(hist[0]);
             var line = [['R','#FF0000'],['G','#008000'],['B','#0000FF']];
-            var myChart = new JSChart(id, 'line');
-            myChart.setLineColor('#8D9386');
-            myChart.setLineWidth(1);
-            myChart.setAxisWidth(1);
+            var myChart = new JSChart('chart', 'line');
             myChart.setSize(w,h);
-            myChart.setTitle(id);
             myChart.setAxisNameX('');
             myChart.setAxisNameY('');
-            myChart.setGrid(false);
-            myChart.setAxisPaddingLeft(0);
+            myChart.setAxisColor('#FFFFFF');
+            myChart.setAxisValuesColor('#949494');
+            myChart.setAxisPaddingLeft(5);
             myChart.setAxisPaddingRight(0);
             myChart.setAxisPaddingTop(0);
-            myChart.setAxisValuesNumberX(10);
-            myChart.setAxisValuesDecimals(0);
-            if(id==='primary'){
-                myChart.setAxisPaddingBottom(20);
-            }
-            else{
-                myChart.setAxisPaddingBottom(0);
-            }
+            myChart.setAxisPaddingBottom(16);
+            myChart.setAxisValuesDecimals(1);
+            myChart.setIntervalStartX(0);
+            myChart.setAxisValuesNumberY(11);
+            myChart.setAxisValuesNumberX(16);
+            myChart.setShowXValues(true);
+            myChart.setGridColor('#C5A2DE');
+            myChart.setGridOpacity(0.3);
+            myChart.setLineColor('#BBBBBB');
+            myChart.setLineWidth(1);
+
             for (var i = 0; i < hist.length; i++) {
-                if(line[i]){
-                    myChart.setDataArray(hist[i],line[i][0]);
-                    myChart.setLineColor(line[i][1],line[i][0]);
-                }else{
-                    myChart.setDataArray(dataR,'N');
-                    myChart.setLineColor('#FFFFFF','N');
-                }
+                myChart.setDataArray(hist[i],line[i][0]);
+                myChart.setLineColor(line[i][1],line[i][0]);
             }
             myChart.draw();
         }
